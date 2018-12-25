@@ -35,7 +35,7 @@ For retrieving parameters:
 ```ruby
 # fetch is similar to Hash#fetch,
 # if the key is not found and there's no default defined, it raises an error
-ParamStore.fetch(:my_secret_key)
+ParamStore.fetch('my_secret_key')
 ```
 
 You can also make AWS Parameter Store compatible with `ENV` by copying params to `ENV`.
@@ -43,11 +43,11 @@ You can also make AWS Parameter Store compatible with `ENV` by copying params to
 ```ruby
 # i.e. config/application.rb
 # Bundler.require(*Rails.groups)
-ParamStore.copy_to_env(keys: %i[key1 key2 key3])
+ParamStore.copy_to_env(keys: %w[key1 key2 key3])
 
-ENV[:key1] # => value for key1
-ENV[:key2] # => value for key2
-ENV[:key3] # => value for key3
+ENV['key1'] # => value for key1
+ENV['key2'] # => value for key2
+ENV['key3'] # => value for key3
 ```
 
 ### SSM client
@@ -70,7 +70,7 @@ You can configure the required parameters for an app and fail at startup.
 ```ruby
 # i.e. config/application.rb
 # Bundler.require(*Rails.groups)
-ParamStore.require!(keys: %i[key1 key2 key3])
+ParamStore.require!(keys: %w[key1 key2 key3])
 ```
 
 #### aws ssm
