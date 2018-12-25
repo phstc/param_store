@@ -6,8 +6,9 @@ require 'param_store/adapters/ssm'
 
 module ParamStore
   class << self
-    attr_accessor :cache
+    attr_accessor :cache, :path
     attr_writer :adapter_instance
+    attr_reader :adapter
 
     def ssm_client
       @_ssm_client ||= Aws::SSM::Client.new
@@ -21,10 +22,6 @@ module ParamStore
         cache[key] = adapter_instance.fetch(key, *args, &block)
       end
       cache[key]
-    end
-
-    def adapter
-      @adapter
     end
 
     def adapter=(adapter)

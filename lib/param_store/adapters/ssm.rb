@@ -3,6 +3,7 @@ module ParamStore
     class SSM
       def fetch(key, *args, &block)
         tmp = {}
+        key = "#{ParamStore.path}/#{key}" unless ParamStore.path.nil?
         begin
           tmp[key] = ParamStore.ssm_client.get_parameter(name: key, with_decryption: true).value
         rescue Aws::SSM::Errors::ParameterNotFound

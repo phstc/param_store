@@ -14,4 +14,9 @@ RSpec.configure do |config|
   end
 
   config.include StubEnv::Helpers
+
+  config.before do
+    ParamStore.path = nil
+    ParamStore.adapter = nil
+  end
 end
