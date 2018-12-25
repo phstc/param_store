@@ -60,6 +60,16 @@ You can also configure what are the required parameters for an app and fail at b
 ParamStore.require!(keys: %i[key1 key2 key3])
 ```
 
+#### aws ssm
+
+A few useful [aws ssm](https://docs.aws.amazon.com/cli/latest/reference/ssm/index.html) commands:
+
+```sh
+aws ssm get-parameters-by-path --path /Prod/ERP/SAP --with-decryption
+aws ssm put-parameter --name /Prod/ERP/SAP --value ... --type SecureString
+```
+
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
