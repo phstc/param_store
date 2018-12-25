@@ -38,7 +38,7 @@ For retrieving parameters:
 ParamStore.fetch(:my_secret_key)
 ```
 
-You can also make the AWS Parameter Store compatible with `ENV` by copying params to `ENV`.
+You can also make AWS Parameter Store compatible with `ENV` by copying params to `ENV`.
 
 ```ruby
 # i.e. config/application.rb
@@ -48,6 +48,19 @@ ParamStore.copy_to_env(keys: %i[key1 key2 key3])
 ENV[:key1] # => value for key1
 ENV[:key2] # => value for key2
 ENV[:key3] # => value for key3
+```
+
+### SSM client
+
+By default `ParamStore` will initiate `Aws::SSM::Client.new` without supplying any parameter. If you want to control the initiation of the SSM client, you can define it by setting `ssm_client`.
+
+
+```ruby
+ParamStore.ssm_client = Aws::SSM::Client.new(
+  region: region_name,
+  credentials: credentials,
+  # ...
+)
 ```
 
 ### Fail-fast
