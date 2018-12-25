@@ -16,7 +16,7 @@ module ParamStore
         keys = keys.flatten
         keys = keys.map { |key| "#{ParamStore.path}/#{key}" } unless ParamStore.path.nil?
         ParamStore.ssm_client.get_parameters(names: keys, with_decryption: true).parameters.each_with_object({}) do |param, result|
-          result[param.name.gsub(ParamStore.path, '')] = param.value
+          result[param.name.gsub(ParamStore.path.to_s, '')] = param.value
         end
       end
     end
