@@ -22,7 +22,7 @@ RSpec.describe ParamStore do
           :get_parameter
         ).once.with(
           name: 'key1a', with_decryption: true
-        ).and_return(double(value: 'value'))
+        ).and_return(double(parameter: double(value: 'value')))
 
         expect(subject.fetch('key1a')).to eq('value')
         expect(subject.fetch('key1a')).to eq('value')

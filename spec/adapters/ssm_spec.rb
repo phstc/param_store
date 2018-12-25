@@ -14,7 +14,7 @@ RSpec.describe ParamStore::Adapters::SSM do
       ).with(
         name: 'key1',
         with_decryption: true
-      ).and_return(double(value: 'value'))
+      ).and_return(double(parameter: double(value: 'value')))
       expect(subject.fetch('key1')).to eq('value')
     end
 
@@ -26,7 +26,7 @@ RSpec.describe ParamStore::Adapters::SSM do
       ).with(
         name: '/Dev/App/key1a',
         with_decryption: true
-      ).and_return(double(value: 'value'))
+      ).and_return(double(parameter: double(value: 'value')))
       expect(subject.fetch('key1a')).to eq('value')
     end
 
