@@ -4,7 +4,7 @@
 
 This gem goal is to <strike>DRY some code I have been copying around for a while</strike> make easy switching in between ENV and [AWS Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) for retrieving parameters.
 
-This gem is not a replacement for [dotenv](https://github.com/bkeepers/dotenv). I still use and recommend it in development, in case it is "safe" to save your keys in `.env` files, otherwise, you could also use AWS Parameter Store for development.
+This gem is not a replacement for [dotenv](https://github.com/bkeepers/dotenv). I still use and recommend it in development, in case it is "safe" to save your keys in `.env` files. Otherwise, you could also use AWS Parameter Store for development.
 
 
 ## Installation
@@ -101,4 +101,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Param::Store project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/phstc/param_store/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the ParamStore project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/phstc/param_store/blob/master/CODE_OF_CONDUCT.md).
