@@ -1,5 +1,5 @@
 require 'param_store/version'
+require 'param_store/adapters/env'
 
 module ParamStore
-  # Your code goes here...
 end
