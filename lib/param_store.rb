@@ -24,10 +24,8 @@ module ParamStore
     end
 
     def copy_to_env(*keys)
-      keys.flatten.map!(&:to_s)
-      adapter_instance.fetch_all(*keys).each do |key, value|
-        ENV[key] = value
-      end
+      cache_all(*keys)
+      keys.each { |key| ENV[key] = cache[key] }
     end
 
     def adapter=(adapter)
@@ -38,6 +36,13 @@ module ParamStore
     end
 
     private
+
+    def cache_all(*keys)
+      keys.flatten.map!(&:to_s)
+      adapter_instance.fetch_all(*keys).each do |key, value|
+        cache[key] = value
+      end
+    end
 
     def cache
       @cache ||= {}
