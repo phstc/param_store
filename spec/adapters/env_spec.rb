@@ -21,4 +21,12 @@ RSpec.describe ParamStore::Adapters::Env do
       end
     end
   end
+
+  describe '#fetch_all' do
+    specify do
+      stub_env('key1', 'value1')
+      stub_env('key2', 'value2')
+      expect(subject.fetch_all(%w[key1 key2])).to eq('key1' => 'value1', 'key2' => 'value2')
+    end
+  end
 end
