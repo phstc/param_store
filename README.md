@@ -20,7 +20,7 @@ For switching in between ENV and AWS Parameter Store, you need you set which ada
 ```ruby
 # read from AWS Parameter Store
 # i.e. config/environments/production.rb
-ParamStore.adapter = :aws_parameter_store
+ParamStore.adapter = :aws_ssm
 # default path for AWS Parameter Store Hierarchies
 # see https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-organize.html
 ParamStore.path = '/Environment/Type of computer/Application'
