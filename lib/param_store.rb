@@ -6,8 +6,8 @@ require 'param_store/adapters/ssm'
 
 module ParamStore
   class << self
-    attr_accessor :cache, :path
-    attr_writer :adapter_instance
+    attr_accessor :path
+    attr_writer :adapter_instance, :cache
     attr_reader :adapter
 
     def ssm_client
@@ -16,7 +16,6 @@ module ParamStore
 
     def fetch(key, *args, &block)
       key = key.to_s
-      self.cache ||= {}
       unless cache.key?(key)
         # cache params to minimize number of requests
         cache[key] = adapter_instance.fetch(key, *args, &block)
@@ -39,6 +38,10 @@ module ParamStore
     end
 
     private
+
+    def cache
+      @cache ||= {}
+    end
 
     def adapter_instance
       @adapter_instance ||= initialize_adapter
