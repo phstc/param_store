@@ -14,6 +14,7 @@ module ParamStore
     end
 
     def fetch(key, *args, &block)
+      key = key.to_s
       self.cache ||= {}
       unless cache.key?(key)
         # cache params to minimize number of requests
