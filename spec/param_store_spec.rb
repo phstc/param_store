@@ -4,7 +4,11 @@ RSpec.describe ParamStore do
       before { ParamStore.adapter = :env }
 
       it 'retrieves a value' do
-        stub_env('key1', 'value')
+        expect_any_instance_of(ParamStore::Adapters::Env).to receive(
+          :fetch
+        ).once.with(
+          'key1'
+        ).and_return('value')
         expect(subject.fetch('key1')).to eq('value')
       end
     end
@@ -18,11 +22,11 @@ RSpec.describe ParamStore do
       end
 
       it 'caches retuned values' do
-        allow(ssm_client).to receive(
-          :get_parameter
+        expect_any_instance_of(ParamStore::Adapters::SSM).to receive(
+          :fetch
         ).once.with(
-          name: 'key1a', with_decryption: true
-        ).and_return(double(parameter: double(value: 'value')))
+          'key1a'
+        ).and_return('value')
 
         expect(subject.fetch('key1a')).to eq('value')
         expect(subject.fetch('key1a')).to eq('value')
@@ -30,13 +34,26 @@ RSpec.describe ParamStore do
     end
 
     context 'when invalid adapter' do
-      before do
-        ParamStore.adapter = nil
-      end
-
       specify do
+        ParamStore.adapter = nil
         expect { subject.fetch('key1yy') }.to raise_error('Invalid adapter: ')
       end
+    end
+  end
+
+  describe '.copy_to_env' do
+    specify do
+      ParamStore.adapter = :aws_ssm
+      allow_any_instance_of(ParamStore::Adapters::SSM).to receive(
+        :fetch_all
+      ).with(
+        'key1', 'key2'
+      ).and_return('key1' => 'value1', 'key2' => 'value2')
+
+      subject.copy_to_env('key1', 'key2')
+
+      expect(ENV['key1']).to eq('value1')
+      expect(ENV['key2']).to eq('value2')
     end
   end
 end

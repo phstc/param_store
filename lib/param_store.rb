@@ -24,6 +24,13 @@ module ParamStore
       cache[key]
     end
 
+    def copy_to_env(*keys)
+      keys.flatten.map!(&:to_s)
+      adapter_instance.fetch_all(*keys).each do |key, value|
+        ENV[key] = value
+      end
+    end
+
     def adapter=(adapter)
       @adapter = adapter
       # erase previous instance and cache

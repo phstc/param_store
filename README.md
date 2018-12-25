@@ -45,7 +45,7 @@ You can also make AWS Parameter Store compatible with `ENV` by copying params to
 ```ruby
 # i.e. config/application.rb
 # Bundler.require(*Rails.groups)
-ParamStore.copy_to_env(keys: %w[key1 key2 key3])
+ParamStore.copy_to_env(%w[key1 key2 key3])
 
 ENV['key1'] # => value for key1
 ENV['key2'] # => value for key2
@@ -72,7 +72,7 @@ You can configure the required parameters for an app and fail at startup.
 ```ruby
 # i.e. config/application.rb
 # Bundler.require(*Rails.groups)
-ParamStore.require!(keys: %w[key1 key2 key3])
+ParamStore.require!(%w[key1 key2 key3])
 ```
 
 #### aws ssm
