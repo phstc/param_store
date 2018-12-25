@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/phstc/param_store.svg?style=svg)](https://circleci.com/gh/phstc/param_store)
+
 # ParamStore
 
 This gem goal is to <strike>DRY some code I have been copying around for a while</strike> make easy switching in between ENV and [AWS Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) for retrieving parameters.
