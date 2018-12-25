@@ -56,4 +56,30 @@ RSpec.describe ParamStore do
       expect(ENV['key2']).to eq('value2')
     end
   end
+
+  describe '.require!' do
+    it 'does not raise an error' do
+      ParamStore.adapter = :aws_ssm
+      allow_any_instance_of(ParamStore::Adapters::SSM).to receive(
+        :fetch_all
+      ).with(
+        'key1', 'key2'
+      ).and_return('key1' => 'value1', 'key2' => 'value2')
+
+      expect { subject.require!('key1', 'key2') }.to_not raise_error
+    end
+
+    context 'whe missing' do
+      it 'does not raise an error' do
+        ParamStore.adapter = :aws_ssm
+        allow_any_instance_of(ParamStore::Adapters::SSM).to receive(
+          :fetch_all
+        ).with(
+          'key1', 'key2', 'key3'
+        ).and_return('key1' => 'value1', 'key2' => 'value2')
+
+        expect { subject.require!('key1', 'key2', 'key3') }.to raise_error('Missing keys: key3')
+      end
+    end
+  end
 end

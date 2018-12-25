@@ -35,6 +35,16 @@ module ParamStore
       self.cache = {}
     end
 
+    def require!(*keys)
+      cache_all(*keys)
+
+      missing = keys.flatten.map!(&:to_s) - cache.keys
+
+      return if missing.none?
+
+      raise "Missing keys: #{missing.join(', ')}"
+    end
+
     private
 
     def cache_all(*keys)
