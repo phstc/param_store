@@ -52,7 +52,7 @@ ENV[:key3] # => value for key3
 
 ### Fail-fast
 
-You can also configure what are the required parameters for an app and fail at boot-time:
+You can configure the required parameters for an app and fail at startup.
 
 ```ruby
 # i.e. config/application.rb
