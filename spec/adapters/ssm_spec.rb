@@ -52,4 +52,26 @@ RSpec.describe ParamStore::Adapters::SSM do
       end
     end
   end
+
+  describe '#fetch_all' do
+    specify do
+      ParamStore.path = '/Dev/App'
+
+      allow(ssm_client).to receive(
+        :get_parameters
+      ).with(
+        names: %w[/Dev/App/key1 /Dev/App/key2],
+        with_decryption: true
+      ).and_return(
+        double(
+          parameters: [
+            double(name: 'key1', value: 'value1'),
+            double(name: 'key2', value: 'value2')
+          ]
+        )
+      )
+
+      expect(subject.fetch_all(%w[key1 key2])).to eq('key1' => 'value1', 'key2' => 'value2')
+    end
+  end
 end

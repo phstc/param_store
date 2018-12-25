@@ -10,7 +10,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'stub_env'
-  gem 'rspec_junit_formatter'
   gem 'rspec', '~> 3.0'
+  gem 'rspec_junit_formatter'
+  gem 'stub_env'
 end
