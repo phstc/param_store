@@ -2,7 +2,7 @@
 
 # ParamStore
 
-This gem goal is to <strike>DRY some code I have been copying around for a while</strike> make easy switching in between ENV and [AWS Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) for retrieving parameters.
+This gem goal is to <strike>DRY some code I have been copying around for a while</strike> make easy switching in between ENV and [AWS Parameter Store (SSM)](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) for retrieving parameters.
 
 This gem is not a replacement for [dotenv](https://github.com/bkeepers/dotenv). I still use and recommend it in development, in case it is "safe" to save your keys in `.env` files. Otherwise, you could also use AWS Parameter Store for development.
 
@@ -17,13 +17,13 @@ gem 'param_store'
 
 ## Usage
 
-For switching in between ENV and AWS Parameter Store, you need you set which adapter you want to use.
+For switching in between ENV and SSM, you need you set which adapter you want to use.
 
 ```ruby
-# read from AWS Parameter Store
+# read from SSM
 # i.e. config/environments/production.rb
 ParamStore.adapter = :aws_ssm
-# default path for AWS Parameter Store Hierarchies
+# default path for SSM Hierarchies
 # see https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-organize.html
 ParamStore.path = '/Environment/Type of computer/Application/'
 
@@ -40,7 +40,9 @@ For retrieving parameters:
 ParamStore.fetch('my_secret_key')
 ```
 
-You can also make AWS Parameter Store compatible with `ENV` by copying params to `ENV`.
+### SSM to ENV
+
+You can also make SSM compatible with `ENV` by copying parameters to `ENV`.
 
 ```ruby
 # i.e. config/application.rb
