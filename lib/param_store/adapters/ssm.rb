@@ -3,7 +3,7 @@ module ParamStore
     class SSM
       def fetch(key, *args, &block)
         tmp = {}
-        key = "#{ParamStore.path}/#{key}" unless ParamStore.path.nil?
+        key = "#{ParamStore.path}#{key}" unless ParamStore.path.nil?
         begin
           tmp[key] = ParamStore.ssm_client.get_parameter(name: key, with_decryption: true).parameter.value
         rescue Aws::SSM::Errors::ParameterNotFound
@@ -14,7 +14,7 @@ module ParamStore
 
       def fetch_all(*keys)
         keys = keys.flatten
-        keys = keys.map { |key| "#{ParamStore.path}/#{key}" } unless ParamStore.path.nil?
+        keys = keys.map { |key| "#{ParamStore.path}#{key}" } if ParamStore.path
         ParamStore.ssm_client.get_parameters(names: keys, with_decryption: true).parameters.each_with_object({}) do |param, result|
           result[param.name.gsub(ParamStore.path.to_s, '')] = param.value
         end

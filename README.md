@@ -25,7 +25,7 @@ For switching in between ENV and AWS Parameter Store, you need you set which ada
 ParamStore.adapter = :aws_ssm
 # default path for AWS Parameter Store Hierarchies
 # see https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-organize.html
-ParamStore.path = '/Environment/Type of computer/Application'
+ParamStore.path = '/Environment/Type of computer/Application/'
 
 # read from ENV
 # i.e. config/environments/[development, test].rb

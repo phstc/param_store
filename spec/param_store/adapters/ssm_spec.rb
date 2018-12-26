@@ -19,7 +19,7 @@ RSpec.describe ParamStore::Adapters::SSM do
     end
 
     it 'retrieves with default path' do
-      ParamStore.path = '/Dev/App'
+      ParamStore.path = '/Dev/App/'
 
       allow(ssm_client).to receive(
         :get_parameter
@@ -55,7 +55,7 @@ RSpec.describe ParamStore::Adapters::SSM do
 
   describe '#fetch_all' do
     specify do
-      ParamStore.path = '/Dev/App'
+      ParamStore.path = '/Dev/App/'
 
       allow(ssm_client).to receive(
         :get_parameters
