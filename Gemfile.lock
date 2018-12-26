@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    param_store (0.1.0)
+    param_store (0.0.1)
       aws-sdk-ssm (~> 1)
 
 GEM
@@ -61,4 +61,4 @@ DEPENDENCIES
   stub_env
 
 BUNDLED WITH
-   1.16.6
+   1.17.2
