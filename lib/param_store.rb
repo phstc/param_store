@@ -13,7 +13,7 @@ module ParamStore
     :'@wrapper',
     :fetch,
     :copy_to_env,
-    :require!
+    :require_keys!
   )
 
   class << self

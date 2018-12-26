@@ -72,7 +72,7 @@ You can configure the required parameters for an app and fail at startup.
 ```ruby
 # i.e. config/application.rb
 # Bundler.require(*Rails.groups)
-ParamStore.require!('key1', 'key2', 'key3')
+ParamStore.require_keys!('key1', 'key2', 'key3')
 ```
 
 #### aws ssm

@@ -13,13 +13,15 @@ module ParamStore
       cache[key]
     end
 
-    def copy_to_env(*keys)
+    def copy_to_env(*keys, require_keys: false)
       cache_all(*keys)
+
+      require_keys!(*keys) if require_keys
 
       keys.each { |key| ENV[key] = cache[key] }
     end
 
-    def require!(*keys)
+    def require_keys!(*keys)
       cache_all(*keys)
 
       missing = keys.flatten.map!(&:to_s) - cache.keys
