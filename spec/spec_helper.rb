@@ -17,7 +17,5 @@ RSpec.configure do |config|
 
   config.before do
     ParamStore.path = nil
-    ParamStore.adapter = nil
-    ParamStore.cache = nil
   end
 end
