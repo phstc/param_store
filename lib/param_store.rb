@@ -17,7 +17,6 @@ module ParamStore
   )
 
   class << self
-    attr_accessor :path
     attr_reader :adapter, :wrapper
 
     def ssm_client

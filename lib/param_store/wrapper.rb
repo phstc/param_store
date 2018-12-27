@@ -4,25 +4,25 @@ module ParamStore
       @adapter_class = adapter_class
     end
 
-    def fetch(key, *args, &block)
+    def fetch(key, *args, **opts, &block)
       key = key.to_s
       unless cache.key?(key)
         # cache params to minimize number of requests
-        cache[key] = adapter_instance.fetch(key, *args, &block)
+        cache[key] = adapter_instance.fetch(key, *args, **opts, &block)
       end
       cache[key]
     end
 
-    def copy_to_env(*keys, require_keys: false)
-      cache_all(*keys)
+    def copy_to_env(*keys, **opts)
+      cache_all(*keys, **opts)
 
-      require_keys!(*keys) if require_keys
+      require_keys!(*keys, **opts) if opts[:require_keys]
 
       keys.each { |key| ENV[key] = cache[key] }
     end
 
-    def require_keys!(*keys)
-      cache_all(*keys)
+    def require_keys!(*keys, **opts)
+      cache_all(*keys, **opts)
 
       missing = keys.flatten.map!(&:to_s) - cache.keys
 
@@ -35,9 +35,9 @@ module ParamStore
 
     attr_accessor :adapter, :cache
 
-    def cache_all(*keys)
+    def cache_all(*keys, **opts)
       keys.flatten.map!(&:to_s)
-      adapter_instance.fetch_all(*keys).each do |key, value|
+      adapter_instance.fetch_all(*keys, **opts).each do |key, value|
         cache[key] = value
       end
     end

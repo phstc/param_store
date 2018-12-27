@@ -7,7 +7,7 @@ RSpec.describe ParamStore::Wrapper do
         expect_any_instance_of(ParamStore::Adapters::Env).to receive(
           :fetch
         ).once.with(
-          'key1'
+          'key1', {}
         ).and_return('value')
         expect(subject.fetch('key1')).to eq('value')
       end
@@ -26,7 +26,7 @@ RSpec.describe ParamStore::Wrapper do
         expect_any_instance_of(ParamStore::Adapters::SSM).to receive(
           :fetch
         ).once.with(
-          'key1a'
+          'key1a', {}
         ).and_return('value')
 
         expect(subject.fetch('key1a')).to eq('value')
@@ -42,7 +42,7 @@ RSpec.describe ParamStore::Wrapper do
       allow_any_instance_of(ParamStore::Adapters::SSM).to receive(
         :fetch_all
       ).with(
-        'key1', 'key2'
+        'key1', 'key2', {}
       ).and_return('key1' => 'value1', 'key2' => 'value2')
 
       subject.copy_to_env('key1', 'key2')
@@ -53,7 +53,7 @@ RSpec.describe ParamStore::Wrapper do
 
     context 'when require_env: true' do
       it 'raises an error when not found' do
-        allow_any_instance_of(ParamStore::Adapters::SSM).to receive(:fetch_all).with('key1').and_return({})
+        allow_any_instance_of(ParamStore::Adapters::SSM).to receive(:fetch_all).with('key1', require_keys: true).and_return({})
         expect {
           subject.copy_to_env('key1', require_keys: true)
         }.to raise_error('Missing keys: key1')
@@ -68,7 +68,7 @@ RSpec.describe ParamStore::Wrapper do
       allow_any_instance_of(ParamStore::Adapters::SSM).to receive(
         :fetch_all
       ).with(
-        'key1', 'key2'
+        'key1', 'key2', {}
       ).and_return('key1' => 'value1', 'key2' => 'value2')
 
       expect { subject.require_keys!('key1', 'key2') }.to_not raise_error
@@ -79,7 +79,7 @@ RSpec.describe ParamStore::Wrapper do
         allow_any_instance_of(ParamStore::Adapters::SSM).to receive(
           :fetch_all
         ).with(
-          'key1', 'key2', 'key3'
+          'key1', 'key2', 'key3', {}
         ).and_return('key1' => 'value1', 'key2' => 'value2')
 
         expect { subject.require_keys!('key1', 'key2', 'key3') }.to raise_error('Missing keys: key3')

@@ -23,9 +23,6 @@ For switching in between ENV and SSM, you need you set which adapter you want to
 # read from SSM
 # i.e. config/environments/production.rb
 ParamStore.adapter = :aws_ssm
-# default path for SSM Hierarchies
-# see https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-organize.html
-ParamStore.path = '/Environment/Type of computer/Application/'
 
 # read from ENV
 # i.e. config/environments/[development, test].rb
@@ -48,6 +45,9 @@ You can also make SSM compatible with `ENV` by copying parameters to `ENV`.
 # i.e. config/application.rb
 # Bundler.require(*Rails.groups)
 ParamStore.copy_to_env('key1', 'key2', 'key3')
+ParamStore.copy_to_env('key1', 'key2', 'key3', path: '/Environment/Type of computer/Application/')
+# path for SSM Hierarchies is also supported
+# see https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-organize.html
 
 ENV['key1'] # => value for key1
 ENV['key2'] # => value for key2

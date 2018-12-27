@@ -19,15 +19,14 @@ RSpec.describe ParamStore::Adapters::SSM do
     end
 
     it 'retrieves with default path' do
-      ParamStore.path = '/Dev/App/'
-
       allow(ssm_client).to receive(
         :get_parameter
       ).with(
         name: '/Dev/App/key1a',
         with_decryption: true
       ).and_return(double(parameter: double(value: 'value')))
-      expect(subject.fetch('key1a')).to eq('value')
+
+      expect(subject.fetch('key1a', path: '/Dev/App/')).to eq('value')
     end
 
     context 'when not found' do
@@ -55,8 +54,6 @@ RSpec.describe ParamStore::Adapters::SSM do
 
   describe '#fetch_all' do
     specify do
-      ParamStore.path = '/Dev/App/'
-
       allow(ssm_client).to receive(
         :get_parameters
       ).with(
@@ -71,7 +68,7 @@ RSpec.describe ParamStore::Adapters::SSM do
         )
       )
 
-      expect(subject.fetch_all(%w[key1 key2])).to eq('key1' => 'value1', 'key2' => 'value2')
+      expect(subject.fetch_all(%w[key1 key2], path: '/Dev/App/')).to eq('key1' => 'value1', 'key2' => 'value2')
     end
   end
 end
