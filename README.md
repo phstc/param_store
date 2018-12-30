@@ -74,7 +74,7 @@ end
 
 ### SSM client
 
-By default `ParamStore` will initiate `Aws::SSM::Client.new` without supplying any parameter. If you want to control the initiation of the SSM client, you can define it by setting `ssm_client`.
+By default ParamStore will initiate `Aws::SSM::Client.new` without supplying any parameter. If you want to control the initiation of the SSM client, you can define it by setting `ssm_client`.
 
 
 ```ruby
