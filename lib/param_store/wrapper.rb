@@ -1,7 +1,8 @@
 module ParamStore
   class Wrapper
-    def initialize(adapter_class)
+    def initialize(adapter_class, **opts)
       @adapter_class = adapter_class
+      @opts = opts
     end
 
     def fetch(key, *args, **opts, &block)
@@ -47,7 +48,7 @@ module ParamStore
     end
 
     def adapter_instance
-      @_adapter_instance ||= @adapter_class.new
+      @_adapter_instance ||= @adapter_class.new(**@opts)
     end
   end
 end

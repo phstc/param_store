@@ -1,6 +1,9 @@
 module ParamStore
   module Adapters
     class SSM
+      def initialize(**_opts)
+      end
+
       def fetch(key, *args, **opts, &block)
         tmp = {}
         key = prepend_path(opts[:path], key)

@@ -23,9 +23,9 @@ module ParamStore
       @_ssm_client ||= Aws::SSM::Client.new
     end
 
-    def adapter=(adapter)
+    def adapter(adapter, **opts)
       @adapter = adapter
-      @wrapper = Wrapper.new(adapter_class(adapter))
+      @wrapper = Wrapper.new(adapter_class(adapter), **opts)
     end
 
     def adapter_class(adapter)
