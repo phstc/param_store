@@ -1,17 +1,23 @@
 module ParamStore
   module Adapters
     class SecretsManager
-      def initialize(**_opts); end
+      attr_reader :default_secret_id
+
+      def initialize(default_secret_id: nil)
+        @default_secret_id = default_secret_id
+      end
 
       def fetch(key, *args, secret_id: nil, version_id: nil, version_stage: nil, &block)
-        get_key = secret_id || key
+        get_key = secret_id || default_secret_id || key
 
         if cache[get_key].nil? &&
-          string = get_secret_value(get_key, version_id, version_stage)
+           string = get_secret_value(get_key, version_id, version_stage)
           cache[get_key] = JSON.parse(string)
         end
 
-        (secret_id.nil? ? cache : cache[get_key]).fetch(key, *args, &block)
+        (
+          secret_id.nil? && default_secret_id.nil? ? cache : cache[get_key]
+        ).fetch(key, *args, &block)
       end
 
       def fetch_all(*keys, **opts)

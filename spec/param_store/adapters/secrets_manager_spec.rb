@@ -21,7 +21,7 @@ RSpec.describe ParamStore::Adapters::SecretsManager do
     end
 
     context 'when secret_id' do
-      specify do
+      it 'retrieves specific keys and cache lookups' do
         expect(secrets_manager_client).to receive(
           :get_secret_value
         ).once.with(
@@ -32,6 +32,23 @@ RSpec.describe ParamStore::Adapters::SecretsManager do
 
         expect(subject.fetch('key1', secret_id: 'keys')).to eq('value1')
         expect(subject.fetch('key2', secret_id: 'keys')).to eq('value2')
+      end
+    end
+
+    context 'when a default secret_id' do
+      it 'retrieves specific keys and cache lookups' do
+        expect(secrets_manager_client).to receive(
+          :get_secret_value
+        ).once.with(
+          secret_id: 'keys',
+          version_id: nil,
+          version_stage: nil
+        ).and_return(double(secret_string: '{"key1":"value1", "key2":"value2"}'))
+
+        subject = described_class.new(default_secret_id: 'keys')
+
+        expect(subject.fetch('key1')).to eq('value1')
+        expect(subject.fetch('key2')).to eq('value2')
       end
     end
 
