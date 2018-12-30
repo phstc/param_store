@@ -8,12 +8,10 @@ module ParamStore
       end
 
       def fetch(key, *args, path: nil, &block)
-        tmp = {}
         key = prepend_path(path, key)
-        begin
-          tmp[key] = ParamStore.ssm_client.get_parameter(name: key, with_decryption: true).parameter.value
-        rescue Aws::SSM::Errors::ParameterNotFound
-          # let the tmp.fetch below deal with not found key and defaults
+        tmp = {}
+        if string = get_parameter(key)
+          tmp[key] = string
         end
         tmp.fetch(key, *args, &block)
       end
@@ -27,6 +25,12 @@ module ParamStore
       end
 
       private
+
+      def get_parameter(key)
+        ParamStore.ssm_client.get_parameter(name: key, with_decryption: true).parameter.value
+      rescue Aws::SSM::Errors::ParameterNotFound
+        # let the tmp.fetch below deal with key not found and defaults
+      end
 
       def prepend_path(path, key)
         "#{path || default_path}#{key}"
