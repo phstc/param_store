@@ -7,6 +7,9 @@ This gem goal is to <strike>DRY some code I have been copying around for a while
 This gem is not a replacement for [dotenv](https://github.com/bkeepers/dotenv). I still use and recommend it in development, in case it is "safe" to save your keys in `.env` files. Otherwise, you could also use AWS Parameter Store for development.
 
 
+**ParamStore works, but it is still under development, future PATCH releases may introduce breaking changes. Once the interface is figured out, this gem will follow [Semantic Versioning](https://semver.org/).**
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
