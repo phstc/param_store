@@ -15,6 +15,7 @@ This gem is not a replacement for [dotenv](https://github.com/bkeepers/dotenv). 
 Add this line to your application's Gemfile:
 
 ```ruby
+gem 'aws-sdk-ssm', '~> 1'
 gem 'param_store'
 ```
 
