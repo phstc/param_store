@@ -82,5 +82,17 @@ RSpec.describe ParamStore::Adapters::SSM do
 
       expect(subject.fetch_all(%w[key1 key2], path: '/Dev/App/')).to eq('key1' => 'value1', 'key2' => 'value2')
     end
+
+    it 'ignores not found keys' do
+      allow(ParamStore.ssm_client).to receive(
+        :get_parameters
+      ).and_return(
+        double(
+          parameters: [
+          ]
+        )
+      )
+      expect(subject.fetch_all('not_found', 'keys2')).to eq({})
+    end
   end
 end
