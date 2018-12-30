@@ -44,8 +44,6 @@ ParamStore.fetch('my_secret_key')
 You can also make SSM compatible with `ENV` by copying parameters to `ENV`.
 
 ```ruby
-# i.e. config/application.rb
-# Bundler.require(*Rails.groups)
 ParamStore.copy_to_env('key1', 'key2', 'key3')
 ParamStore.copy_to_env('key1', 'key2', 'key3', path: '/Environment/Type of computer/Application/')
 # path overrides default_path
@@ -54,6 +52,22 @@ ENV['key1'] # => value for key1
 ENV['key2'] # => value for key2
 ENV['key3'] # => value for key3
 ```
+
+#### Rails
+
+If you are using ParamStore in prod and dotenv in dev:
+
+```ruby
+# config/application.rb
+# Bundler.require(*Rails.groups)
+if Rails.env.production?
+  ParamStore.adapter(:aws_ssm)
+  ParamStore.copy_to_env('MONGOHQ_URL', require_keys: true, path: '/Prod/MyApp/')
+else
+  Dotenv::Railtie.load
+end
+```
+
 
 ### SSM client
 
@@ -73,9 +87,10 @@ ParamStore.ssm_client = Aws::SSM::Client.new(
 You can configure the required parameters for an app and fail at startup.
 
 ```ruby
-# i.e. config/application.rb
+# config/application.rb
 # Bundler.require(*Rails.groups)
 ParamStore.require_keys!('key1', 'key2', 'key3')
+# this will raise an error if any key is missing
 ```
 
 #### aws ssm
@@ -86,7 +101,6 @@ A few useful [aws ssm](https://docs.aws.amazon.com/cli/latest/reference/ssm/inde
 aws ssm get-parameters-by-path --path /Prod/ERP/SAP --with-decryption
 aws ssm put-parameter --name /Prod/ERP/SAP --value ... --type SecureString
 ```
-
 
 ## Development
 
