@@ -11,7 +11,11 @@ module ParamStore
         tmp.fetch(key, *args, &block)
       end
 
-      def fetch_all(*keys, **opts); end
+      def fetch_all(*keys, **opts)
+        # poor man's fetch all
+        # I couldn't find a batch get for secrets manager :/
+        keys.map { |key| fetch(key, {}, **opts) }.inject(:merge)
+      end
 
       private
 

@@ -42,4 +42,35 @@ RSpec.describe ParamStore::Adapters::SecretsManager do
       end
     end
   end
+
+  describe '#featch_all' do
+    specify do
+      allow(secrets_manager_client).to receive(
+        :get_secret_value
+      ).with(
+        secret_id: 'keys1',
+        version_id: nil,
+        version_stage: nil
+      ).and_return(double(secret_string: '{"keys1_key1":"value"}'))
+
+      allow(secrets_manager_client).to receive(
+        :get_secret_value
+      ).with(
+        secret_id: 'keys2',
+        version_id: nil,
+        version_stage: nil
+      ).and_return(double(secret_string: '{"keys2_key1":"value"}'))
+
+      expect(subject.fetch_all('keys1', 'keys2')).to eq('keys1_key1' => 'value', 'keys2_key1' => 'value')
+    end
+
+    it 'ignores not found keys' do
+      allow(ParamStore.secrets_manager_client).to receive(
+        :get_secret_value
+      ).and_raise(
+        Aws::SecretsManager::Errors::ResourceNotFoundException.new({}, 'not found')
+      )
+      expect(subject.fetch_all('not_found')).to eq({})
+    end
+  end
 end
