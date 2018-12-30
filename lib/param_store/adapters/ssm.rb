@@ -1,12 +1,15 @@
 module ParamStore
   module Adapters
     class SSM
-      def initialize(**_opts)
+      attr_reader :default_path
+
+      def initialize(default_path: nil)
+        @default_path = default_path
       end
 
-      def fetch(key, *args, **opts, &block)
+      def fetch(key, *args, path: nil, &block)
         tmp = {}
-        key = prepend_path(opts[:path], key)
+        key = prepend_path(path, key)
         begin
           tmp[key] = ParamStore.ssm_client.get_parameter(name: key, with_decryption: true).parameter.value
         rescue Aws::SSM::Errors::ParameterNotFound
@@ -15,8 +18,7 @@ module ParamStore
         tmp.fetch(key, *args, &block)
       end
 
-      def fetch_all(*keys, **opts)
-        path = opts[:path]
+      def fetch_all(*keys, path: nil)
         keys = keys.flatten
         keys = keys.map { |key| prepend_path(path, key) } if path
         ParamStore.ssm_client.get_parameters(names: keys, with_decryption: true).parameters.each_with_object({}) do |param, result|
@@ -27,9 +29,7 @@ module ParamStore
       private
 
       def prepend_path(path, key)
-        return key unless path
-
-        "#{path}#{key}"
+        "#{path || default_path}#{key}"
       end
     end
   end
