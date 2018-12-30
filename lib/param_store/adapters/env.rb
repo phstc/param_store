@@ -4,11 +4,11 @@ module ParamStore
       def initialize(**_opts)
       end
 
-      def fetch(key, *args, &block)
+      def fetch(key, *args, **_opts, &block)
         ENV.fetch(key, *args, &block)
       end
 
-      def fetch_all(*keys)
+      def fetch_all(*keys, **_opts)
         keys = keys.flatten
         keys.each_with_object({}) do |key, result|
           result[key] = ENV[key]

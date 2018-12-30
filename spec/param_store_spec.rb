@@ -1,5 +1,5 @@
 RSpec.describe ParamStore do
-  describe '.adapter=' do
+  describe '.adapter' do
     it 'initializes wrapper' do
       subject.adapter :aws_ssm
       expect(subject.wrapper).to be
