@@ -3,12 +3,15 @@ module ParamStore
     class SecretsManager
       def initialize(**_opts); end
 
-      def fetch(key, *args, version_id: nil, version_stage: nil, &block)
-        tmp = {}
-        if string = get_secret_value(key, version_id, version_stage)
-          tmp[key] = JSON.parse(string)
+      def fetch(key, *args, secret_id: nil, version_id: nil, version_stage: nil, &block)
+        get_key = secret_id || key
+
+        if cache[get_key].nil? &&
+          string = get_secret_value(get_key, version_id, version_stage)
+          cache[get_key] = JSON.parse(string)
         end
-        tmp.fetch(key, *args, &block)
+
+        (secret_id.nil? ? cache : cache[get_key]).fetch(key, *args, &block)
       end
 
       def fetch_all(*keys, **opts)
@@ -19,17 +22,18 @@ module ParamStore
 
       private
 
-      def get_secret_value(key, version_id, version_stage)
-        options = { secret_id: key }
-        options[:version_id] = version_id
-        options[:version_stage] = version_stage
-        ParamStore.secrets_manager_client.get_secret_value(options).secret_string
+      def get_secret_value(secret_id, version_id, version_stage)
+        ParamStore.secrets_manager_client.get_secret_value(
+          secret_id: secret_id,
+          version_id: version_id,
+          version_stage: version_stage
+        ).secret_string
       rescue Aws::SecretsManager::Errors::ResourceNotFoundException
         # let the tmp.fetch below deal with key not found and defaults
       end
 
-      def prepend_path(path, key)
-        "#{path || default_path}#{key}"
+      def cache
+        @_cache ||= {}
       end
     end
   end

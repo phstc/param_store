@@ -20,6 +20,21 @@ RSpec.describe ParamStore::Adapters::SecretsManager do
       expect(subject.fetch('keys')).to eq('key1' => 'value')
     end
 
+    context 'when secret_id' do
+      specify do
+        expect(secrets_manager_client).to receive(
+          :get_secret_value
+        ).once.with(
+          secret_id: 'keys',
+          version_id: nil,
+          version_stage: nil
+        ).and_return(double(secret_string: '{"key1":"value1", "key2":"value2"}'))
+
+        expect(subject.fetch('key1', secret_id: 'keys')).to eq('value1')
+        expect(subject.fetch('key2', secret_id: 'keys')).to eq('value2')
+      end
+    end
+
     context 'when not found' do
       before do
         allow(ParamStore.secrets_manager_client).to receive(
