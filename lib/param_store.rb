@@ -1,10 +1,12 @@
 require 'aws-sdk-ssm'
+require 'ejson_wrapper'
 require 'forwardable'
 
 require 'param_store/version'
 require 'param_store/wrapper'
 require 'param_store/adapters/env'
 require 'param_store/adapters/ssm'
+require 'param_store/adapters/ejson_wrapper'
 
 module ParamStore
   extend SingleForwardable
@@ -34,6 +36,8 @@ module ParamStore
         Adapters::Env
       when :aws_ssm
         Adapters::SSM
+      when :ejson_wrapper
+        Adapters::EJSONWrapper
       else
         raise "Invalid adapter: #{adapter}"
       end
