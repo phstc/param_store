@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe ParamStore::Adapters::Env do
-
   before do
     ParamStore.adapter :env
   end
