@@ -2,7 +2,6 @@ PATH
   remote: .
   specs:
     param_store (0.0.1)
-      aws-sdk-ssm (~> 1)
 
 GEM
   remote: https://rubygems.org/
@@ -52,6 +51,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aws-sdk-ssm (~> 1)
   bundler (~> 1.16)
   param_store!
   pry-byebug

@@ -1,4 +1,3 @@
-require 'aws-sdk-ssm'
 require 'forwardable'
 
 require 'param_store/version'
@@ -33,10 +32,19 @@ module ParamStore
       when :env
         Adapters::Env
       when :aws_ssm
+        require_aws_ssm
         Adapters::SSM
       else
         raise "Invalid adapter: #{adapter}"
       end
+    end
+
+    private
+
+    def require_aws_ssm
+      require 'aws-sdk-ssm'
+    rescue LoadError
+      fail "aws_ssm requires aws-sdk-ssm to be installed separately. Please add gem 'aws-sdk-ssm' to your Gemfile"
     end
   end
 end

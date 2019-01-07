@@ -4,6 +4,7 @@ RSpec.describe ParamStore::Adapters::SSM do
   let(:ssm_client) { double 'SSM client' }
 
   before do
+    ParamStore.adapter :aws_ssm
     allow(ParamStore).to receive(:ssm_client).and_return(ssm_client)
   end
 
