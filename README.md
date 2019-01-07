@@ -63,16 +63,16 @@ gem 'aws-sdk-ssm', '~> 1'
 Configure the adapter:
 
 ```ruby
-ParamStore.adapter :aws_ssm, default_path: '/Prod/App/DATABASE_URL'
-# default_path is optional, but when supplied it is going to be used as prefix for all lookups
-# see https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-organize.html
+ParamStore.adapter :aws_ssm, default_path: '/Prod/App/'
 ```
 
 #### Retrieving parameters
 
 ```ruby
 ParamStore.fetch('name')
-ParamStore.fetch('name', path: '/Prod/App/DATABASE_URL')
+# => get parameter name, if default_path /Prod/App/ get parameter /Prod/App/name
+ParamStore.fetch('name', path: '/Prod/App/')
+# => get parameter /Prod/App/name
 ```
 
 #### Copying from SSM adapter to ENV
@@ -120,10 +120,12 @@ Configure the adapter:
 
 ```ruby
 ParamStore.adapter :aws_secrets_manager
-# ParamStore.fetch('secret') returns a Hash "{\n  \"password\":\"pwd\"\n}\n"
+# ParaStore.fetch('secret_id')
+# => {\n  \"password\":\"pwd\"\n}\n
 
 ParamStore.adapter :aws_secrets_manager, default_secret_id: 'secret_id'
-# default_secret_id is optional, but when supplied ParamStore.fetch('password') returns a String 'pwd'
+# ParaStore.fetch('password')
+# => pwd
 ```
 
 #### Retrieving parameters
