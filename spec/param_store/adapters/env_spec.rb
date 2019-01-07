@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 RSpec.describe ParamStore::Adapters::Env do
+
+  before do
+    ParamStore.adapter :env
+  end
+
   describe '#fetch' do
     it 'retrieves a value' do
       stub_env('key1', 'value')

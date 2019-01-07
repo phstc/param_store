@@ -12,6 +12,7 @@ RSpec.describe ParamStore::Adapters::EJSONWrapper do
   subject { described_class.new(file_path: file_path) }
 
   before do
+    ParamStore.adapter :ejson_wrapper
     allow(::EJSONWrapper).to receive(:decrypt).with(file_path, {}).and_return(result)
   end
 

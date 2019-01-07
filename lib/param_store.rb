@@ -1,5 +1,3 @@
-require 'aws-sdk-ssm'
-require 'ejson_wrapper'
 require 'forwardable'
 
 require 'param_store/version'
@@ -35,12 +33,22 @@ module ParamStore
       when :env
         Adapters::Env
       when :aws_ssm
+        require_adapter_dependency(adapter, 'aws-sdk-ssm')
         Adapters::SSM
       when :ejson_wrapper
+        require_adapter_dependency(adapter, 'ejson_wrapper')
         Adapters::EJSONWrapper
       else
         raise "Invalid adapter: #{adapter}"
       end
+    end
+
+    private
+
+    def require_adapter_dependency(adapter, dependency)
+      require dependency
+    rescue LoadError
+      fail "#{adapter} requires #{dependency} to be installed separately. Please add gem '#{dependency}' to your Gemfile"
     end
   end
 end
