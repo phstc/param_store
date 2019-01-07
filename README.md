@@ -2,59 +2,168 @@
 
 # ParamStore
 
-This gem goal is to <strike>DRY some code I have been copying around for a while</strike> make easy switching in between ENV and [AWS Parameter Store (SSM)](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) for retrieving parameters.
+This gem goal is to <strike>DRY some code I have been copying around for a while</strike> make easy switching in between ENV, [AWS Parameter Store (SSM)](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html), [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) and [EJSON](https://github.com/Shopify/ejson) for retrieving parameters.
 
-This gem is not a replacement for [dotenv](https://github.com/bkeepers/dotenv). I still use and recommend it in development, in case it is "safe" to save your keys in `.env` files. Otherwise, you could also use AWS Parameter Store for development.
-
-
-**ParamStore works, but it is still under development, future PATCH releases may introduce breaking changes. Once the interface is figured out, this gem will follow [Semantic Versioning](https://semver.org/).**
-
+This gem is not a replacement for [dotenv](https://github.com/bkeepers/dotenv). I still use and recommend it in development, in case it is "safe" to save your keys in `.env` files.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'aws-sdk-ssm', '~> 1'
 gem 'param_store'
 ```
 
 ## Usage
 
-For switching in between ENV and SSM, you need you set which adapter you want to use.
+### Configuring adapters
+
+Available adapters: `:env`, `:aws_ssm`, `:aws_secrets_manager` and `:ejson_wrapper`.
 
 ```ruby
-# read from SSM
-# i.e. config/environments/production.rb
-ParamStore.adapter :aws_ssm, default_path: '/Dev/App/SecretKey'
-# default_path is optional, but when supplied it is going to be used as prefix for all lookups
-# see https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-organize.html
+ParamStore.adapter = adapter
+```
 
-# read from ENV
-# i.e. config/environments/[development, test].rb
+### Retrieving parameters
+
+```ruby
+# ParamStore.fetch is similar to Hash#fetch,
+# If the key is not found and there's no default given, it will raise a `KeyError`
+ParamStore.fetch('name')
+ParamStore.fetch('name', 'default value')
+ParamStore.fetch('name') { 'default value' }
+```
+
+### Copying from any adapter to ENV
+
+```ruby
+ParamStore.copy_to_env('name1', 'name2', 'name3')
+
+ENV['name1'] # => value for name1
+ENV['name2'] # => value for name2
+ENV['name3'] # => value for name3
+```
+
+## Adapters
+
+### ENV
+
+```ruby
 ParamStore.adapter :env
 ```
 
-For retrieving parameters:
+### AWS Parameter Store (SSM)
+
+Add to your Gemfile:
 
 ```ruby
-# fetch is similar to Hash#fetch,
-# if the key is not found and there's no default defined, it raises an error
-ParamStore.fetch('my_secret_key')
+gem 'aws-sdk-ssm', '~> 1'
 ```
 
-### SSM to ENV
-
-You can also make SSM compatible with `ENV` by copying parameters to `ENV`.
+Configure the adapter:
 
 ```ruby
-ParamStore.copy_to_env('key1', 'key2', 'key3')
-ParamStore.copy_to_env('key1', 'key2', 'key3', path: '/Environment/Type of computer/Application/')
+ParamStore.adapter :aws_ssm, default_path: '/Prod/App/DATABASE_URL'
+# default_path is optional, but when supplied it is going to be used as prefix for all lookups
+# see https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-organize.html
+```
+
+#### Retrieving parameters
+
+```ruby
+ParamStore.fetch('name')
+ParamStore.fetch('name', path: '/Prod/App/DATABASE_URL')
+```
+
+#### Copying from SSM adapter to ENV
+
+```ruby
+ParamStore.copy_to_env('name1', 'name2', 'name3', path: '/Environment/Type of computer/Application/')
 # path overrides default_path
+
+ENV['name1'] # => value for name1
+ENV['name2'] # => value for name2
+ENV['name3'] # => value for name3
+```
+
+#### SSM client
+
+By default ParamStore will initiate `Aws::SSM::Client.new` without supplying any argument. If you want to control the initiation of the SSM client, you can define it by setting `ssm_client`.
+
+
+```ruby
+ParamStore.ssm_client = Aws::SSM::Client.new(
+  region: region_name,
+  credentials: credentials,
+  # ...
+)
+```
+
+#### CLI
+
+A few useful [aws ssm](https://docs.aws.amazon.com/cli/latest/reference/ssm/index.html) commands:
+
+```sh
+aws ssm get-parameters-by-path --path /Prod/ERP/SAP --with-decryption
+aws ssm put-parameter --name /Prod/ERP/SAP --value ... --type SecureString
+```
+
+### Secrets Manager
+
+Add to your Gemfile:
+
+```ruby
+gem 'aws-sdk-secretsmanager', '~> 1'
+```
+
+Configure the adapter:
+
+```ruby
+ParamStore.adapter :aws_secrets_manager
+# ParamStore.fetch('secret') returns a Hash "{\n  \"password\":\"pwd\"\n}\n"
+
+ParamStore.adapter :aws_secrets_manager, default_secret_id: 'secret_id'
+# default_secret_id is optional, but when supplied ParamStore.fetch('password') returns a String 'pwd'
+```
+
+#### Retrieving parameters
+
+```ruby
+ParamStore.fetch('secret_id')
+ParamStore.fetch('password', secret_id: 'secret_id')
+```
+
+#### Copying from Secrets Manager adapter to ENV
+
+```ruby
+ParamStore.copy_to_env('key1', 'key2', 'key3', secret_id: 'secret_id')
+# secret_id overrides default_secret_id
 
 ENV['key1'] # => value for key1
 ENV['key2'] # => value for key2
 ENV['key3'] # => value for key3
+```
+
+### EJSON
+
+Add to your Gemfile:
+
+```ruby
+gem 'ejson_wrapper', '~> 0.3.1'
+```
+
+Configure the adapter:
+
+```ruby
+ParamStore.adapter(
+  :ejson_wrapper,
+  file_path: '...',
+  key_dir: '...',
+  private_key: '...',
+  use_kms: '...',
+  region: '...'
+)
+# see https://github.com/envato/ejson_wrapper#usage
 ```
 
 #### Rails
@@ -66,24 +175,10 @@ If you are using ParamStore in prod and dotenv in dev:
 # Bundler.require(*Rails.groups)
 if Rails.env.production?
   ParamStore.adapter(:aws_ssm)
-  ParamStore.copy_to_env('MONGOHQ_URL', require_keys: true, path: '/Prod/MyApp/')
+  ParamStore.copy_to_env('DATABASE_URL', require_keys: true, path: '/Prod/MyApp/')
 else
   Dotenv::Railtie.load
 end
-```
-
-
-### SSM client
-
-By default ParamStore will initiate `Aws::SSM::Client.new` without supplying any parameter. If you want to control the initiation of the SSM client, you can define it by setting `ssm_client`.
-
-
-```ruby
-ParamStore.ssm_client = Aws::SSM::Client.new(
-  region: region_name,
-  credentials: credentials,
-  # ...
-)
 ```
 
 ### Fail-fast
@@ -95,15 +190,6 @@ You can configure the required parameters for an app and fail at startup.
 # Bundler.require(*Rails.groups)
 ParamStore.require_keys!('key1', 'key2', 'key3')
 # this will raise an error if any key is missing
-```
-
-#### aws ssm
-
-A few useful [aws ssm](https://docs.aws.amazon.com/cli/latest/reference/ssm/index.html) commands:
-
-```sh
-aws ssm get-parameters-by-path --path /Prod/ERP/SAP --with-decryption
-aws ssm put-parameter --name /Prod/ERP/SAP --value ... --type SecureString
 ```
 
 ## Development
