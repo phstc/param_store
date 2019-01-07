@@ -15,9 +15,11 @@ module ParamStore
     end
 
     def copy_to_env(*keys, **opts)
+      require_keys = opts.delete(:require_keys)
+
       cache_all(*keys, **opts)
 
-      require_keys!(*keys, **opts) if opts[:require_keys]
+      require_keys!(*keys, **opts) if require_keys
 
       keys.each { |key| ENV[key] = cache[key] }
     end

@@ -53,7 +53,7 @@ RSpec.describe ParamStore::Wrapper do
 
     context 'when require_env: true' do
       it 'raises an error when not found' do
-        allow_any_instance_of(ParamStore::Adapters::SSM).to receive(:fetch_all).with('key1', require_keys: true).and_return({})
+        allow_any_instance_of(ParamStore::Adapters::SSM).to receive(:fetch_all).with('key1', {}).and_return({})
         expect {
           subject.copy_to_env('key1', require_keys: true)
         }.to raise_error('Missing keys: key1')
