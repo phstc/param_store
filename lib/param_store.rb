@@ -1,5 +1,3 @@
-require 'aws-sdk-ssm'
-require 'aws-sdk-secretsmanager'
 require 'forwardable'
 
 require 'param_store/version'
@@ -7,6 +5,7 @@ require 'param_store/wrapper'
 require 'param_store/adapters/env'
 require 'param_store/adapters/ssm'
 require 'param_store/adapters/secrets_manager'
+require 'param_store/adapters/ejson_wrapper'
 
 module ParamStore
   extend SingleForwardable
@@ -40,12 +39,25 @@ module ParamStore
       when :env
         Adapters::Env
       when :aws_ssm
+        require_adapter_dependency(adapter, 'aws-sdk-ssm')
         Adapters::SSM
       when :aws_secrets_manager
+        require_adapter_dependency(adapter, 'aws-sdk-secretsmanager')
         Adapters::SecretsManager
+      when :ejson_wrapper
+        require_adapter_dependency(adapter, 'ejson_wrapper')
+        Adapters::EJSONWrapper
       else
         raise "Invalid adapter: #{adapter}"
       end
+    end
+
+    private
+
+    def require_adapter_dependency(adapter, dependency)
+      require dependency
+    rescue LoadError
+      fail "#{adapter} requires #{dependency} to be installed separately. Please add gem '#{dependency}' to your Gemfile"
     end
   end
 end

@@ -1,15 +1,24 @@
 require 'spec_helper'
 
-RSpec.describe ParamStore::Adapters::Env do
+RSpec.describe ParamStore::Adapters::EJSONWrapper do
+  let(:file_path) { 'myfile.ejson' }
+  let(:result) do
+    {
+      'key1' => 'value1',
+      'key2' => 'value2'
+    }
+  end
+
+  subject { described_class.new(file_path: file_path) }
 
   before do
-    ParamStore.adapter :env
+    ParamStore.adapter :ejson_wrapper
+    allow(::EJSONWrapper).to receive(:decrypt).with(file_path, {}).and_return(result)
   end
 
   describe '#fetch' do
     it 'retrieves a value' do
-      stub_env('key1', 'value')
-      expect(subject.fetch('key1')).to eq('value')
+      expect(subject.fetch('key1')).to eq('value1')
     end
 
     context 'when not found' do
@@ -29,8 +38,6 @@ RSpec.describe ParamStore::Adapters::Env do
 
   describe '#fetch_all' do
     specify do
-      stub_env('key1', 'value1')
-      stub_env('key2', 'value2')
       expect(subject.fetch_all(%w[key1 key2])).to eq('key1' => 'value1', 'key2' => 'value2')
     end
   end

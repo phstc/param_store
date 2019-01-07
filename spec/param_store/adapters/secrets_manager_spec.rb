@@ -4,6 +4,7 @@ RSpec.describe ParamStore::Adapters::SecretsManager do
   let(:secrets_manager_client) { double 'Secrets Manager client' }
 
   before do
+    ParamStore.adapter :aws_secrets_manager
     allow(ParamStore).to receive(:secrets_manager_client).and_return(secrets_manager_client)
   end
 
