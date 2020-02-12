@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    param_store (0.0.1)
+    param_store (1.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -73,4 +73,4 @@ DEPENDENCIES
   stub_env
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
