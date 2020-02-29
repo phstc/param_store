@@ -38,7 +38,7 @@ GEM
     pry-byebug (3.6.0)
       byebug (~> 10.0)
       pry (~> 0.10)
-    rake (10.4.2)
+    rake (13.0.1)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
@@ -67,7 +67,7 @@ DEPENDENCIES
   ejson_wrapper (~> 0.3.1)
   param_store!
   pry-byebug
-  rake (~> 10.0)
+  rake (~> 13.0)
   rspec (~> 3.0)
   rspec_junit_formatter
   stub_env
