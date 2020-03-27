@@ -94,7 +94,10 @@ RSpec.describe ParamStore::Adapters::SecretsManager do
         version_stage: nil
       ).and_return(double(secret_string: '{"keys2_key1":"value"}'))
 
-      expect(subject.fetch_all('keys1', 'keys2')).to eq('keys1_key1' => 'value', 'keys2_key1' => 'value')
+      expect(subject.fetch_all('keys1', 'keys2')).to eq(
+        'keys1' => { 'keys1_key1' => 'value' },
+        'keys2' => { 'keys2_key1' => 'value' }
+      )
     end
 
     it 'ignores not found keys' do

@@ -23,7 +23,10 @@ module ParamStore
       def fetch_all(*keys, **opts)
         # poor man's fetch all
         # I couldn't find a batch get for secrets manager :/
-        keys.map { |key| fetch(key, {}, **opts) }.inject(:merge)
+        keys.map do |key|
+          value = fetch(key, {}, **opts)
+          value&.empty? ? {} : { key =>  value }
+        end.inject(:merge)
       end
 
       private
@@ -36,6 +39,7 @@ module ParamStore
         ).secret_string
       rescue Aws::SecretsManager::Errors::ResourceNotFoundException
         # let the tmp.fetch below deal with key not found and defaults
+        nil
       end
 
       def cache
