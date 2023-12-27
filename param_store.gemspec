@@ -6,7 +6,6 @@ Gem::Specification.new do |spec|
   spec.name          = 'param_store'
   spec.version       = ParamStore::VERSION
   spec.authors       = ['Pablo Cantero']
-  spec.email         = ['pablohstc@gmail.com']
 
   spec.summary       = 'Easy switch in between ENV and AWS Parameter Store (SSM)'
   spec.homepage      = 'https://github.com/phstc/param_store'
