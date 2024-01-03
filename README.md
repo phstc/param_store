@@ -86,6 +86,12 @@ ENV['name2'] # => value for name2
 ENV['name3'] # => value for name3
 ```
 
+Note that only up to 10 keys can be requested at a time [docs](https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_GetParameters.html#API_GetParameters_RequestSyntax). In case you have more you could use:
+
+```ruby
+['name1', 'name2', 'name3', ...].each_slice(10) { |vars| ParamStore.copy_to_env(*vars, path: '/Environment/Type of computer/Application/') }
+```
+
 #### SSM client
 
 By default ParamStore will initiate `Aws::SSM::Client.new` without supplying any argument. If you want to control the initiation of the SSM client, you can define it by setting `ssm_client`.
